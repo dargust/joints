@@ -3,6 +3,8 @@ import time
 from pygame.math import Vector2
 pygame.init()
 
+clock = pygame.time.Clock()
+
 size = width, height = 640, 480
 screen = pygame.display.set_mode(size)
 
@@ -44,9 +46,11 @@ def render():
     pygame.draw.circle(screen, black, (int(target[0]), int(target[1])), 10)
     pygame.display.flip()
 
-while 1:
+done = False
+while not done:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+        if event.type == pygame.QUIT:
+            done = True
 
     solve_ik(0, points[-1], target)
     angle = 0
@@ -54,12 +58,12 @@ while 1:
         angle += angles[i-1]
         points[i] = points[i-1] + rel_points[i-1].rotate(angle)
 
-    target += target_speed
-    if target.x <= 0 or target.x >= width:
-        target_speed.x = -target_speed.x
-    if target.y <= 0 or target.y >= height:
-        target_speed.y = -target_speed.y
+    x,y = pygame.mouse.get_pos()
+    target.x = x
+    target.y = y
 
     render()
 
-    pygame.time.wait(int(1000/60))
+    clock.tick(60)
+
+pygame.quit()
